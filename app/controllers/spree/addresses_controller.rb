@@ -53,10 +53,16 @@ class Spree::AddressesController < Spree::StoreController
   end
 
   def destroy
-    @address.destroy
+    @address.destroy_with_saving_used
 
-    flash[:notice] = I18n.t(:successfully_removed, scope: :address_book)
-    redirect_to(request.env['HTTP_REFERER'] || account_path) unless request.xhr?
+    render json: @address
+  end
+
+  # touch so it comes out at the top of the list when addresses are fetch
+  def set_default
+    @address.touch
+
+    render json: @address
   end
 
   private
