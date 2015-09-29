@@ -2,7 +2,7 @@ class Spree::AddressAbility
   include CanCan::Ability
 
   def initialize(user)
-    can :manage, Spree::Address do |address|
+    can :read, Spree::Address do |address|
       address.user == user
     end
 

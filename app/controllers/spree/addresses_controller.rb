@@ -1,8 +1,7 @@
 class Spree::AddressesController < Spree::StoreController
   helper Spree::AddressesHelper
   rescue_from ActiveRecord::RecordNotFound, with: :render_404
-  #load_and_authorize_resource class: Spree::Address
-  load_resource class: Spree::Address
+  load_and_authorize_resource class: Spree::Address
 
   def index
     @addresses = spree_current_user.addresses
@@ -34,8 +33,7 @@ class Spree::AddressesController < Spree::StoreController
     if @address.editable?
       if @address.update_attributes(address_params)
         flash[:notice] = I18n.t(:successfully_updated, scope: :address_book)
-        # redirect_back_or_default(account_path)
-        render json: @address
+        redirect_back_or_default(account_path)
       else
         render :action => 'edit'
       end
@@ -53,16 +51,10 @@ class Spree::AddressesController < Spree::StoreController
   end
 
   def destroy
-    @address.destroy_with_saving_used
+    @address.destroy
 
-    render json: @address
-  end
-
-  # touch so it comes out at the top of the list when addresses are fetch
-  def set_default
-    @address.touch
-
-    render json: @address
+    flash[:notice] = I18n.t(:successfully_removed, scope: :address_book)
+    redirect_to(request.env['HTTP_REFERER'] || account_path) unless request.xhr?
   end
 
   private
@@ -74,12 +66,9 @@ class Spree::AddressesController < Spree::StoreController
                               :address2,
                               :city,
                               :state_id,
-                              :state_name,
                               :zipcode,
                               :country_id,
-                              :phone,
-                              :alternative_phone,
-                              :company
+                              :phone
                              )
     end
 end
