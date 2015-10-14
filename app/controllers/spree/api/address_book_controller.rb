@@ -46,7 +46,7 @@ module Spree
 
     private
       def find_address
-        @address ||= Spree::Address.accessible_by(current_ability, :manage).find(params[:id])
+        @address ||= Spree::Address.accessible_by(current_ability, :read).find(params[:id])
       end
 
       def address_params
