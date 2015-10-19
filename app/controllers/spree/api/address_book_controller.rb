@@ -21,10 +21,11 @@ module Spree
           end
         else
           # create a new one from the existing address
-          new_address = @address.clone
+          new_address = @address.dup
+          new_address.attributes = address_params.except(:id)
           new_address.save
 
-          # delete thee existing
+          # delete the existing
           @address.update_attribute(:deleted_at, Time.now)
 
           render json: new_address
